@@ -1,149 +1,99 @@
-Smart Farm Crop Health Monitor – PL/SQL Project
+# Smart Farm Crop Health Monitor
+A comprehensive, beginner-to-advanced project covering smart agriculture, crop health monitoring, environmental sensing, data analysis, and GitHub workflows for project development.
 
-A PL/SQL-based smart agriculture system designed to help farmers monitor crop conditions, detect environmental risks, and receive automated alerts for unhealthy situations (e.g., high temperature, low humidity, or pest detection).
+## Project Initiation
+This project was initiated and developed as part of academic instruction and practical training to support learners in understanding smart farming technologies. It is intended for students, developers, data analysts, agricultural engineers, and IT professionals seeking strong competencies in crop health monitoring and IoT-based farming solutions.
 
-This project combines database design, automation logic, and real-world problem-solving using Oracle SQL & PL/SQL.
+## Author Information
+**HIRWA Roy**  
+**ID:** 24174  
+  
+GitHub https://github.com/hirwa333  
 
- Project Initiation
+---
 
-The Smart Farm Crop Health Monitor was developed as part of an academic practicum in Oracle PL/SQL, focusing on innovation and real-world database solutions.
-The project aims to demonstrate how PL/SQL can automate data analysis and assist in sustainable farming through intelligent alerts and reports.
+## Project Outline
 
-It is ideal for students, researchers, or agricultural data developers interested in smart farming and database automation.
+### 1. Introduction to Smart Farming
+- Overview of smart agriculture  
+- Importance of crop health monitoring  
+- IoT integration in agriculture  
 
- Instructor Information
+### 2. Crop Health Monitoring Essentials
+- Sensors: soil moisture, temperature, humidity, light  
+- Data collection methods  
+- Thresholds and alerts for optimal growth  
 
-Assistant Lecturer – Adventist University of Central Africa (AUCA)
-Eric Maniraguha
+### 3. Data Storage and Management
+- Database setup for sensor data  
+- Tables for crops, sensor readings, and environmental data  
+- SQL queries for data retrieval and analysis  
 
-LinkedIn
+### 4. Advanced Monitoring Concepts
+- Historical data tracking  
+- Trends and predictive analysis  
+- Alerts for abnormal conditions  
 
-GitHub (Primary)
+### 5. GitHub for Smart Farm Projects
+- Version control basics  
+- Creating and configuring a GitHub repository  
+- Commit, push, pull  
+- Branching & merging  
+- Pull requests  
+- Best practices for project collaboration  
 
-GitHub (Secondary)
+### 6. Project Setup
+- System requirements  
+- Installing Python and necessary libraries  
+- Database configuration (SQL or SQLite)  
+- Sensor configuration (hardware and software)  
 
-Research Associate – CyLab Africa / Upanzi Network
+### 7. Programming Fundamentals
+- Python main program  
+- Sensor modules  
+- Utility functions  
+- Database integration  
 
-Instructor – Adventist University of Central Africa (AUCA)
+### 8. Procedures, Functions & Alerts
+- Sensor reading functions  
+- Data validation and processing  
+- Alert system for abnormal crop conditions  
 
-Master of Science in Information Technology – Carnegie Mellon University Africa
+### 9. Advanced Concepts
+- Data visualization (graphs, charts)  
+- Trend analysis and reporting  
+- Predictive models (optional ML integration)  
 
- Project Outline
-1. Introduction
+### 10. Performance Tuning
+- Efficient data storage  
+- Optimized sensor reading intervals  
+- Data processing efficiency  
 
-Agriculture faces challenges such as climate changes, pest attacks, and unpredictable weather patterns. The Smart Farm Crop Health Monitor helps farmers make informed decisions by tracking daily temperature, humidity, and pest data for each crop.
-When conditions become risky, the system automatically creates alerts and stores them for review.
+### 11. Transactions & Data Integrity
+- Ensuring reliable data storage  
+- Handling sensor failures  
+- Maintaining data consistency  
 
-2. Objectives
+### 12. Practical Case Studies
+- Monitoring crop health for a sample farm  
+- Generating alerts and reports  
+- Integration with dashboards or mobile apps  
 
-To automate monitoring of environmental data for crops.
+---
 
-To detect abnormal temperature or humidity levels using PL/SQL.
+## License — MIT
+MIT License  
 
-To generate alerts and reports for farmers.
+Copyright (c) 2025 HIRWA Roy  
 
-To demonstrate the use of procedures, functions, and conditional logic in Oracle PL/SQL.
-
-3. Database Schema
-CROPS Table
-Column	Type	Description
-crop_id	NUMBER	Unique crop ID
-crop_name	VARCHAR2(50)	Name of the crop
-farm_zone	VARCHAR2(30)	Location/zone in the farm
-ideal_temp	NUMBER	Recommended temperature
-ideal_humidity	NUMBER	Recommended humidity
-DAILY_READINGS Table
-Column	Type	Description
-reading_id	NUMBER	Unique reading ID
-crop_id	NUMBER	References crop_id in CROPS
-temperature	NUMBER	Recorded temperature
-humidity	NUMBER	Recorded humidity
-pest_detected	VARCHAR2(3)	YES or NO
-reading_date	DATE	Date of data record
-ALERTS Table
-Column	Type	Description
-alert_id	NUMBER	Unique alert ID
-crop_id	NUMBER	References crop_id
-alert_message	VARCHAR2(200)	Problem description
-alert_date	DATE	Alert creation date
-4. PL/SQL Components
-
-Procedures and Functions:
-
-check_crop_health
-
-Analyzes daily readings.
-
-Compares them with the crop’s ideal values.
-
-Inserts an alert when conditions are unsafe or pests are detected.
-
-generate_summary_report
-
-Produces a report of crops with alerts.
-
-delete_old_alerts (optional)
-
-Cleans up old alerts to keep data current.
-
-5. Innovation & Uniqueness
-
-Unlike ordinary record-keeping systems, this project introduces automated data evaluation.
-Using PL/SQL, it simulates real-world smart farming features like:
-
-Automatic problem detection.
-
-Real-time alert generation.
-
-Scalable database design ready for IoT integration.
-
-This demonstrates how PL/SQL logic can be applied to agriculture intelligence and environmental monitoring.
-
-6. Expected Output
-
-Store and analyze environmental readings.
-
-Automatically identify and log abnormal conditions.
-
-Generate a readable summary of alerts and healthy crops.
-
-Provide a solid example of database-driven automation using Oracle PL/SQL.
-
- Technology Stack
-
-Database: Oracle 21c / 19c
-
-Language: PL/SQL (Procedures, Functions, Cursors)
-
-Tools: Oracle SQL Developer
-
-Version Control (optional): GitHub
-
- Learning Outcomes
-
-Students will learn how to:
-
-Design relational tables with constraints and foreign keys.
-
-Implement decision logic using IF…THEN and loops in PL/SQL.
-
-Automate data-driven processes and generate reports.
-
-Apply database programming in real-world agriculture systems.
-
- License — MIT
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+Permission is hereby granted, free of charge, to any person obtaining a copy  
+of this software and associated documentation files (the “Software”), to deal  
 in the Software without restriction, including without limitation the rights   
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
 copies of the Software, and to permit persons to whom the Software is          
 furnished to do so, subject to the following conditions:                       
 
-The above copyright notice and this permission notice shall be included in all
+The above copyright notice and this permission notice shall be included in all  
 copies or substantial portions of the Software.                                
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      
@@ -153,3 +103,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
 SOFTWARE.
+
