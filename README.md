@@ -1,4 +1,4 @@
-##Smart Farm Crop Health Monitor – PL/SQL Project
+Smart Farm Crop Health Monitor – PL/SQL Project
 
 A PL/SQL-based smart agriculture system designed to help farmers monitor crop conditions, detect environmental risks, and receive automated alerts for unhealthy situations (e.g., high temperature, low humidity, or pest detection).
 
