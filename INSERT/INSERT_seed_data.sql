@@ -10,10 +10,10 @@ INSERT INTO crops (crop_id, crop_name, planting_date, expected_harvest_date)
 VALUES (1, 'Tomato', TO_DATE('2025-03-01', 'YYYY-MM-DD'), TO_DATE('2025-07-01', 'YYYY-MM-DD'));
 
 INSERT INTO crops (crop_id, crop_name, planting_date, expected_harvest_date)
-VALUES (2, 'Lettuce', TO_DATE('2025-04-15', 'YYYY-MM-DD'), TO_DATE('2025-06-15', 'YYYY-MM-DD'));
+VALUES (2, 'Potatoes', TO_DATE('2025-04-15', 'YYYY-MM-DD'), TO_DATE('2025-06-15', 'YYYY-MM-DD'));
 
 INSERT INTO crops (crop_id, crop_name, planting_date, expected_harvest_date)
-VALUES (3, 'Corn', TO_DATE('2025-02-20', 'YYYY-MM-DD'), TO_DATE('2025-08-20', 'YYYY-MM-DD'));
+VALUES (3, 'Beans', TO_DATE('2025-02-20', 'YYYY-MM-DD'), TO_DATE('2025-08-20', 'YYYY-MM-DD'));
 
 
 -- =========================
