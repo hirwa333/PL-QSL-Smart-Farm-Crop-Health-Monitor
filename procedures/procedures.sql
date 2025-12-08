@@ -5,16 +5,20 @@
 
 -- 1. Add New Reading
 CREATE OR REPLACE PROCEDURE add_crop_reading (
-    p_crop_id       IN NUMBER,
+    p_crop_id       IN NUMBER,   -- optional if needed for logic
     p_sensor_id     IN NUMBER,
     p_reading_value IN NUMBER
 )
 IS
 BEGIN
-    INSERT INTO crop_health_readings(crop_id, sensor_id, reading_value, reading_date)
-    VALUES (p_crop_id, p_sensor_id, p_reading_value, SYSDATE);
+    -- Insert reading into sensor_readings
+    INSERT INTO sensor_readings(sensor_id, reading_value, reading_date)
+    VALUES (p_sensor_id, p_reading_value, SYSDATE);
+
+    COMMIT;
 END;
 /
+-- -------------------------------------------------
 
 -- 2. Generate Alert Manually
 CREATE OR REPLACE PROCEDURE generate_alert (
@@ -26,43 +30,42 @@ CREATE OR REPLACE PROCEDURE generate_alert (
 IS
 BEGIN
     INSERT INTO alerts (
-        alert_id, crop_id, sensor_id, alert_type, alert_message, alert_date, status
+        crop_id, sensor_id, alert_type, alert_message, alert_date, status
     )
     VALUES (
-        alerts_seq.NEXTVAL,
-        p_crop_id,
-        p_sensor_id,
-        p_alert_type,
-        p_alert_message,
-        SYSDATE,
-        'Pending'
+        p_crop_id, p_sensor_id, p_alert_type, p_alert_message, SYSDATE, 'Pending'
     );
+
+    COMMIT;
 END;
 /
+-- -------------------------------------------------
 
 -- 3. Check Crop Health Automatically
 CREATE OR REPLACE PROCEDURE check_crop_health
 IS
 BEGIN
     FOR rec IN (
-        SELECT r.crop_id, r.sensor_id, r.reading_value, s.sensor_type
-        FROM crop_health_readings r
+        SELECT r.reading_id, r.sensor_id, r.reading_value, s.sensor_type, c.crop_id
+        FROM sensor_readings r
         JOIN sensors s ON r.sensor_id = s.sensor_id
+        JOIN crops c ON s.sensor_id = r.sensor_id   -- assuming each sensor is linked to a crop
         WHERE r.reading_date >= TRUNC(SYSDATE)
     ) LOOP
 
+        -- Temperature Alert
         IF rec.sensor_type = 'Temperature' AND rec.reading_value > 35 THEN
             generate_alert(rec.crop_id, rec.sensor_id, 'High Temperature', 'Temperature exceeded safe limit');
         END IF;
 
+        -- Soil Moisture Alert
         IF rec.sensor_type = 'Soil Moisture' AND rec.reading_value < 30 THEN
             generate_alert(rec.crop_id, rec.sensor_id, 'Low Moisture', 'Moisture is below minimum threshold');
         END IF;
 
-        IF rec.sensor_type = 'pH' AND (rec.reading_value < 5.5 OR rec.reading_value > 7.5) THEN
-            generate_alert(rec.crop_id, rec.sensor_id, 'pH Warning', 'pH is out of range');
-        END IF;
+        -- Optional: Add pH or other sensor types if you add them later
 
     END LOOP;
 END;
 /
+
