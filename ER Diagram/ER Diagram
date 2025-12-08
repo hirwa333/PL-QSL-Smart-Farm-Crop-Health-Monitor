@@ -1,0 +1,50 @@
+            +----------------------+
+            |       FARMS          |
+            +----------------------+
+            | PK farm_id           |
+            | farm_name            |
+            | location             |
+            | owner_name           |
+            | created_at           |
+            +----------+-----------+
+                       |
+             1         |      Many
+                       |
+        +--------------+----------------+
+        |                               |
++-----------------------+       +----------------------+
+|        CROPS          |       |       SENSORS        |
++-----------------------+       +----------------------+
+| PK crop_id            |       | PK sensor_id         |
+| FK farm_id            |       | FK farm_id           |
+| crop_name             |       | sensor_type          |
+| plant_date            |       | installed_at         |
+| harvest_date          |       +----------+-----------+
++----------+------------+                    |
+           |                                 |
+           | 1                               | 1
+           | Many                            | Many
+           |                                 |
++----------+------------------+   +-----------+-----------------+
+|  CROP_HEALTH_READINGS       |   |           ALERTS            |
++-----------------------------+   +-----------------------------+
+| PK reading_id               |   | PK alert_id                 |
+| FK crop_id                  |   | FK crop_id                  |
+| FK sensor_id                |   | FK sensor_id                |
+| reading_value               |   | alert_type                  |
+| reading_date                |   | alert_message               |
++-----------------------------+   | alert_date                  |
+                                  | status                      |
+                                  +-----------------------------+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+| Relationship       | Type     | Meaning                            |
+| ------------------ | -------- | ---------------------------------- |
+| Farms → Crops      | 1 → Many | One farm grows multiple crops      |
+| Farms → Sensors    | 1 → Many | One farm uses multiple sensors     |
+| Crops → Readings   | 1 → Many | A crop has many health readings    |
+| Sensors → Readings | 1 → Many | A sensor generates many readings   |
+| Crops → Alerts     | 1 → Many | A crop can trigger multiple alerts |
+| Sensors → Alerts   | 1 → Many | Alerts come from specific sensors  |
