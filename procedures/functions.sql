@@ -1,9 +1,9 @@
 -- ===============================================
--- Smart Farm Crop Health Monitor - Functions Script
+-- Smart Farm Crop Health Monitor - Functions Script (Fixed for current tables)
 -- Author: HIRWA Roy (ID: 24174)
 -- ===============================================
 
--- 1. Get Average Reading
+-- 1️⃣ Get Average Reading per crop and sensor type
 CREATE OR REPLACE FUNCTION get_average_reading (
     p_crop_id     IN NUMBER,
     p_sensor_type IN VARCHAR2
@@ -13,16 +13,16 @@ IS
 BEGIN
     SELECT AVG(r.reading_value)
     INTO v_avg
-    FROM crop_health_readings r
+    FROM sensor_readings r
+    JOIN alerts a ON r.sensor_id = a.sensor_id
     JOIN sensors s ON r.sensor_id = s.sensor_id
-    WHERE r.crop_id = p_crop_id
+    WHERE a.crop_id = p_crop_id
       AND s.sensor_type = p_sensor_type;
 
     RETURN NVL(v_avg, 0);
 END;
 /
-
--- 2. Calculate Health Score
+-- 2️⃣ Calculate Health Score
 CREATE OR REPLACE FUNCTION calculate_health_score (
     p_crop_id IN NUMBER
 ) RETURN NUMBER
@@ -43,8 +43,7 @@ BEGIN
     RETURN GREATEST(v_score, 0);
 END;
 /
-
--- 3. Get Risk Level
+-- 3️⃣ Get Risk Level
 CREATE OR REPLACE FUNCTION get_risk_level (
     p_crop_id IN NUMBER
 ) RETURN VARCHAR2
@@ -53,9 +52,12 @@ IS
 BEGIN
     v_score := calculate_health_score(p_crop_id);
 
-    IF v_score >= 70 THEN RETURN 'Low';
-    ELSIF v_score >= 40 THEN RETURN 'Medium';
-    ELSE RETURN 'High';
+    IF v_score >= 70 THEN
+        RETURN 'Low';
+    ELSIF v_score >= 40 THEN
+        RETURN 'Medium';
+    ELSE
+        RETURN 'High';
     END IF;
 END;
 /
