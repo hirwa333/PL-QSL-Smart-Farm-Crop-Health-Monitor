@@ -1,124 +1,123 @@
 -- ===============================================
--- Smart Farm Crop Health Monitor - Database Creation
+-- Smart Farm Crop Health Monitor - SQL Developer Version
 -- Author: HIRWA Roy (ID: 24174)
--- Phase IV: Database Creation Script
+-- Windows 21c XE
 -- ===============================================
 
 -- ===============================================
--- STEP 1: Create Pluggable Database (Run as SYSTEM)
+-- STEP 1: Open the PDB if it exists
 -- ===============================================
+BEGIN
+    BEGIN
+        EXECUTE IMMEDIATE 'ALTER PLUGGABLE DATABASE tue_24174_hirwa_smartfarm_db OPEN READ WRITE';
+        DBMS_OUTPUT.PUT_LINE('PDB opened successfully.');
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('PDB may already be open or an error occurred: ' || SQLERRM);
+    END;
+END;
+/
 
--- Connect as SYSTEM user first
--- CONNECT system/<your_password>
-
--- Create the PDB with proper naming convention
-CREATE PLUGGABLE DATABASE tue_24174_hirwa_smartfarm_db
-ADMIN USER farm_admin IDENTIFIED BY hirwa
-FILE_NAME_CONVERT=(
-    '/u01/app/oracle/oradata/XE/pdbseed/', 
-    '/u01/app/oracle/oradata/XE/tue_24174_hirwa_smartfarm_db/'
-);
-
--- Open the new PDB
-ALTER PLUGGABLE DATABASE tue_24174_hirwa_smartfarm_db OPEN;
-
--- ===============================================
--- STEP 2: Switch to the new PDB and create tablespaces
--- ===============================================
-
--- Switch to the new PDB
-ALTER SESSION SET CONTAINER = tue_24174_hirwa_smartfarm_db;
-
--- Create tablespace for data
-CREATE TABLESPACE farm_data 
-DATAFILE '/u01/app/oracle/oradata/XE/tue_24174_hirwa_smartfarm_db/farm_data01.dbf' 
-SIZE 100M 
-AUTOEXTEND ON 
-NEXT 25M 
-MAXSIZE UNLIMITED;
-
--- Create tablespace for indexes
-CREATE TABLESPACE farm_index 
-DATAFILE '/u01/app/oracle/oradata/XE/tue_24174_hirwa_smartfarm_db/farm_index01.dbf' 
-SIZE 50M 
-AUTOEXTEND ON 
-NEXT 15M 
-MAXSIZE UNLIMITED;
-
--- Create temporary tablespace
-CREATE TEMPORARY TABLESPACE farm_temp
-TEMPFILE '/u01/app/oracle/oradata/XE/tue_24174_hirwa_smartfarm_db/farm_temp01.dbf'
-SIZE 50M
-AUTOEXTEND ON;
+-- Verify PDB status
+SELECT name, open_mode FROM v$pdbs;
 
 -- ===============================================
--- STEP 3: Create application user with proper privileges
+-- STEP 2: Switch session to the PDB
 -- ===============================================
-
--- Create the application user
-CREATE USER farm_app_user IDENTIFIED BY farm2025
-DEFAULT TABLESPACE farm_data
-TEMPORARY TABLESPACE farm_temp
-QUOTA UNLIMITED ON farm_data
-QUOTA UNLIMITED ON farm_index;
-
--- Grant necessary privileges
-GRANT CONNECT, RESOURCE TO farm_app_user;
-GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO farm_app_user;
-GRANT CREATE PROCEDURE, CREATE FUNCTION, CREATE TRIGGER TO farm_app_user;
-GRANT CREATE SEQUENCE, CREATE TYPE, CREATE SYNONYM TO farm_app_user;
-GRANT UNLIMITED TABLESPACE TO farm_app_user;
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER SESSION SET CONTAINER = tue_24174_hirwa_smartfarm_db';
+END;
+/
 
 -- ===============================================
--- STEP 4: Database Configuration
+-- STEP 3: Create Tablespaces if missing
 -- ===============================================
+BEGIN
+    -- FARM_DATA
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE TABLESPACE farm_data
+            DATAFILE ''C:\APP\ROYHI\PRODUCT\21C\ORADATA\XE\TUE_24174_HIRWA_SMARTFARM_DB\farm_data01.dbf''
+            SIZE 100M AUTOEXTEND ON NEXT 25M MAXSIZE UNLIMITED';
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -1543 THEN
+                DBMS_OUTPUT.PUT_LINE('Tablespace FARM_DATA already exists.');
+            ELSE
+                RAISE;
+            END IF;
+    END;
 
--- Set memory parameters (adjust based on your Oracle version)
-ALTER SYSTEM SET sga_target=256M SCOPE=spfile;
-ALTER SYSTEM SET pga_aggregate_target=128M SCOPE=spfile;
+    -- FARM_INDEX
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE TABLESPACE farm_index
+            DATAFILE ''C:\APP\ROYHI\PRODUCT\21C\ORADATA\XE\TUE_24174_HIRWA_SMARTFARM_DB\farm_index01.dbf''
+            SIZE 50M AUTOEXTEND ON NEXT 15M MAXSIZE UNLIMITED';
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -1543 THEN
+                DBMS_OUTPUT.PUT_LINE('Tablespace FARM_INDEX already exists.');
+            ELSE
+                RAISE;
+            END IF;
+    END;
 
--- Enable archive logging (if needed for your project)
--- ALTER DATABASE ARCHIVELOG;
+    -- FARM_TEMP
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE TEMPORARY TABLESPACE farm_temp
+            TEMPFILE ''C:\APP\ROYHI\PRODUCT\21C\ORADATA\XE\TUE_24174_HIRWA_SMARTFARM_DB\farm_temp01.dbf''
+            SIZE 50M AUTOEXTEND ON';
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -1543 THEN
+                DBMS_OUTPUT.PUT_LINE('Tablespace FARM_TEMP already exists.');
+            ELSE
+                RAISE;
+            END IF;
+    END;
+END;
+/
 
--- Set autoextend parameters
-ALTER DATABASE DATAFILE 
-'/u01/app/oracle/oradata/XE/tue_24174_hirwa_smartfarm_db/farm_data01.dbf'
-AUTOEXTEND ON MAXSIZE UNLIMITED;
+-- ===============================================
+-- STEP 4: Create Application User if missing
+-- ===============================================
+BEGIN
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE USER farm_app_user IDENTIFIED BY farm2025
+            DEFAULT TABLESPACE farm_data
+            TEMPORARY TABLESPACE farm_temp
+            QUOTA UNLIMITED ON farm_data
+            QUOTA UNLIMITED ON farm_index';
+
+        EXECUTE IMMEDIATE 'GRANT CONNECT, RESOURCE TO farm_app_user';
+        EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO farm_app_user';
+        EXECUTE IMMEDIATE 'GRANT CREATE PROCEDURE, CREATE FUNCTION, CREATE TRIGGER TO farm_app_user';
+        EXECUTE IMMEDIATE 'GRANT CREATE SEQUENCE, CREATE TYPE, CREATE SYNONYM TO farm_app_user';
+        EXECUTE IMMEDIATE 'GRANT UNLIMITED TABLESPACE TO farm_app_user';
+
+        DBMS_OUTPUT.PUT_LINE('User FARM_APP_USER created and privileges granted.');
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -19617 THEN
+                DBMS_OUTPUT.PUT_LINE('User FARM_APP_USER already exists.');
+            ELSE
+                RAISE;
+            END IF;
+    END;
+END;
+/
 
 -- ===============================================
 -- STEP 5: Verification Queries
 -- ===============================================
-
--- Verify PDB creation
-SELECT name, open_mode FROM v$pdbs WHERE name = 'TUE_24174_HIRWA_SMARTFARM_DB';
+-- Verify PDB status
+SELECT name, open_mode FROM v$pdbs;
 
 -- Verify tablespaces
-SELECT tablespace_name, status, contents FROM dba_tablespaces 
+SELECT tablespace_name, status, contents
+FROM dba_tablespaces
 WHERE tablespace_name LIKE 'FARM%';
 
--- Verify user creation
+-- Verify user
 SELECT username, account_status, default_tablespace, temporary_tablespace
-FROM dba_users WHERE username = 'FARM_APP_USER';
-
--- Verify privileges
-SELECT privilege FROM dba_sys_privs WHERE grantee = 'FARM_APP_USER';
-
--- ===============================================
--- STEP 6: Connection Instructions for Application User
--- ===============================================
-
-/*
-After running this script, connect as the application user:
-
-SQL> CONNECT farm_app_user/farm2025@localhost:1521/tue_24174_hirwa_smartfarm_db
-
-Or using full connection string:
-CONNECT farm_app_user/farm2025@//localhost:1521/tue_24174_hirwa_smartfarm_db
-
-Then run your table creation scripts in this order:
-1. Your existing tables.sql
-2. Your existing seed_data.sql (with fixes)
-3. Your existing functions.sql
-4. Your existing procedures.sql
-5. Your existing trigger.sql
-*/
+FROM dba_users
+WHERE username = 'FARM_APP_USER';
